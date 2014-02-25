@@ -3,10 +3,10 @@ require 'forwardable'
 
 module God
   # The Watch class is a specialized Task that handles standard process
-  # workflows. It has four states: init, up, start, and restart.
+  # workflows. It has five states: init, up, stop, start, and restart.
   class Watch < Task
     # The Array of Symbol valid task states.
-    VALID_STATES = [:init, :up, :start, :restart]
+    VALID_STATES = [:init, :up, :stop, :start, :restart]
 
     # The Sybmol initial state.
     INITIAL_STATE = :init
