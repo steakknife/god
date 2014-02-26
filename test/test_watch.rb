@@ -75,6 +75,34 @@ class TestWatch < Test::Unit::TestCase
     end
   end
 
+  def test_transition_should_transition_from_up_to_stop
+    @watch.move(:up)
+    @watch.instance_eval do
+      transition(:up, :stop) do |on|
+        on.condition(:fake_poll_condition) do |c|
+          c.interval = 0.1
+        end
+      end
+    end
+    @watch.monitor
+    sleep 0.2
+    assert_equal :stop, @watch.state
+  end
+
+  def test_transition_should_transition_from_stop_to_up
+    @watch.move(:stop)
+    @watch.monitor
+    @watch.instance_eval do
+      transition(:stop, :up) do |stop|
+        stop.condition(:fake_poll_condition) do |c|
+          c.interval = 0.1
+        end
+      end
+    end
+    sleep 0.2
+    assert_equal :up, @watch.state
+  end
+
   def test_transition_should_create_and_record_a_metric_for_the_given_start_state
     @watch.transition(:init, :start) { }
     assert_equal 1, @watch.metrics[:init].size
